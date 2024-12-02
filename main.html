@@ -1,0 +1,295 @@
+<header class="navbar">
+    <h1>MergeMate</h1>
+    <button id="login-btn">Login with GitHub</button>
+</header>
+
+<main class="container">
+    <!-- Profile Section -->
+    <section id="profile" class="hidden">
+        <h2>Your Profile</h2>
+        <div class="profile-info">
+            <img id="profile-pic" src="" alt="Profile Picture">
+            <p id="profile-name">Name: </p>
+            <p id="profile-repos">Repositories: </p>
+        </div>
+
+        <!-- Additional Details Section -->
+        <div>
+            <h3>Additional Details</h3>
+            <label for="experience">Experience Level:</label>
+            <input type="text" id="experience" placeholder="Enter your experience level">
+
+            <label for="expertise">Expertise:</label>
+            <input type="text" id="expertise" placeholder="Enter your expertise">
+
+            <label for="tech-stack">Tech Stack:</label>
+            <input type="text" id="tech-stack" placeholder="Enter your tech stack">
+
+            <button id="save-details">Save Details</button>
+        </div>
+    </section>
+
+    <!-- Project Discovery Section -->
+    <section id="projects">
+        <h2>Discover Projects</h2>
+        <div id="swipe-container"></div>
+    </section>
+
+    <!-- Task Board Section -->
+    <section id="task-board" class="hidden">
+        <h2>Task Board</h2>
+        <div class="board">
+            <div class="column todo">
+                <h3>To Do</h3>
+            </div>
+            <div class="column inProgress">
+                <h3>In Progress</h3>
+            </div>
+            <div class="column completed">
+                <h3>Completed</h3>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div id="notification-container"></div>
+
+<script>
+// OAuth Setup
+const clientId = "Ov23liBIbfz9PktAYoYr"; // Replace with your GitHub client ID
+const redirectUri = "http://127.0.0.1:5500"; // Local testing URL
+
+// Dummy Project Data
+const projects = [
+  { name: "Open Source AI", description: "AI-driven solutions for everyone." },
+  { name: "React Toolkit", description: "Essential tools for React developers." },
+];
+
+// Dummy Task Data
+const tasks = {
+  todo: ["Setup project", "Write documentation"],
+  inProgress: ["Build UI components"],
+  completed: ["Define project scope"],
+};
+
+// Login Button Event
+document.getElementById("login-btn").addEventListener("click", () => {
+  const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=read:user,user:email`;
+  window.location.href = authUrl;
+});
+
+// Handle OAuth callback
+function handleOAuthCallback() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const code = urlParams.get("code"); // Capture the authorization code from the URL
+  if (code) {
+    // Simulate access token exchange and fetch user data (In a real app, exchange the code for an access token here)
+    alert(`OAuth successful! Code received: ${code}`);
+    fetchUserProfile(code);
+  }
+}
+
+// Fetch User Profile Data from GitHub (Simulated)
+function fetchUserProfile(code) {
+  // Simulating fetching user data from GitHub API using the access token
+  document.getElementById("profile-pic").src = "https://via.placeholder.com/100"; // Use GitHub avatar_url
+  document.getElementById("profile-name").textContent = "Name: John Doe"; // Replace with GitHub username
+  document.getElementById("profile-repos").textContent = "Repositories: 10"; // Replace with number of repositories
+  document.getElementById("profile").classList.remove("hidden");
+}
+
+// Allow users to add additional details
+document.getElementById("save-details").addEventListener("click", () => {
+  const experience = document.getElementById("experience").value;
+  const expertise = document.getElementById("expertise").value;
+  const techStack = document.getElementById("tech-stack").value;
+
+  // Simulate saving additional user details (For real app, send this data to a backend)
+  alert(`Details saved! Experience: ${experience}, Expertise: ${expertise}, Tech Stack: ${techStack}`);
+});
+
+// Load Projects
+function loadProjects() {
+  const container = document.getElementById("swipe-container");
+  projects.forEach((project) => {
+    const card = document.createElement("div");
+    card.className = "project-card";
+    card.innerHTML = `
+        <h3>${project.name}</h3>
+        <p>Description: ${project.description}</p>
+        <button class="swipe-btn" onclick="likeProject('${project.name}')">Like</button>
+        <button class="swipe-btn" onclick="dismissProject('${project.name}')">Dismiss</button>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// Load Tasks
+function loadTasks() {
+  Object.keys(tasks).forEach((columnId) => {
+    const column = document.querySelector(`.column.${columnId}`);
+    tasks[columnId].forEach((task) => {
+      const taskDiv = document.createElement("div");
+      taskDiv.className = "task";
+      taskDiv.textContent = task;
+      column.appendChild(taskDiv);
+    });
+  });
+}
+
+// Notifications
+function notifyUser(message) {
+  const notification = document.createElement("div");
+  notification.className = "notification";
+  notification.textContent = message;
+  document.getElementById("notification-container").appendChild(notification);
+  setTimeout(() => notification.remove(), 3000);
+}
+
+// Like/Dismiss Project
+function likeProject(projectName) {
+  notifyUser(`You liked ${projectName}!`);
+}
+
+function dismissProject(projectName) {
+  notifyUser(`${projectName} dismissed.`);
+}
+
+// Initialize
+loadProjects();
+loadTasks();
+
+// Check for OAuth callback and capture the code
+if (window.location.search.includes("code")) {
+  handleOAuthCallback();
+}
+</script>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f9;
+}
+
+.navbar {
+  background-color: #6200ea;
+  color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+h1 {
+  font-size: 24px;
+  margin: 0;
+}
+
+button {
+  background-color: #6200ea;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #3700b3;
+}
+
+.container {
+  padding: 20px;
+}
+
+.hidden {
+  display: none;
+}
+
+h2 {
+  font-size: 22px;
+  color: #333;
+}
+
+.profile-info img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+}
+
+textarea {
+  height: 100px;
+}
+
+.save-btn {
+  background-color: #4caf50;
+}
+
+.save-btn:hover {
+  background-color: #45a049;
+}
+
+.list-btn {
+  background-color: #f7a1b5;
+  margin-top: 20px;
+}
+
+.list-btn:hover {
+  background-color: #ff6e8f;
+}
+
+#projects-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+#projects-list li {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+#projects-list button {
+  background-color: #6200ea;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+#projects-list button:hover {
+  background-color: #3700b3;
+}
+
+.notification {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background-color: #6200ea;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  opacity: 0.9;
+  z-index: 1000;
+}
+
+.notification.hidden {
+  display: none;
+}
+</style>
