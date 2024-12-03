@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AlphaHub</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <header class="navbar hidden" id="navbar">
+    <h1>AlphaHub</h1>
+    <button id="logout-btn">Logout</button>
+  </header>
+
+  <main class="container hidden" id="main-container">
+    <section id="profile">
+      <h2>Welcome, <span id="username"></span></h2>
+    </section>
+
+    <section id="project-management">
+      <h2>Manage Your Projects</h2>
+      <form id="create-project-form">
+        <input type="text" id="project-name" placeholder="Project Name" required />
+        <textarea id="project-description" placeholder="Project Description" required></textarea>
+        <button type="submit">Create Project</button>
+      </form>
+      <ul id="project-list">
+        <!-- List of projects will be dynamically generated -->
+      </ul>
+    </section>
+  </main>
+
+  <!-- Login Page -->
+  <div id="login-page" class="login-page">
+    <div class="login-box">
+      <h2>Login</h2>
+      <button id="login-github-btn">Login with GitHub</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
